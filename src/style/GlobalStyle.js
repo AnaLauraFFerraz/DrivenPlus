@@ -28,6 +28,7 @@ const GlobalStyle = createGlobalStyle`
     }
     body {
         line-height: 1;
+        font-family: 'Roboto';
     }
     ol, ul {
         list-style: none;
