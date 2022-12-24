@@ -2,36 +2,71 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components"
-import { UserContext } from "../context/UserContext";
+import UserContext from "../contexts/UserContext";
 
 export default function SignUpPage() {
+    const navigate = useNavigate();
+
+    const { setAndPersistToken } = useContext(UserContext);
+    const [email, setEmail] = useState("")
+    const [name, setName] = useState("")
+    const [cpf, setCpf] = useState("")
+    const [password, setPassword] = useState("")
+
+    function signUp() {
+        const body = {
+            email: email,
+            name: name,
+            cpf: cpf,
+            password: password
+        }
+        console.log(body)
+        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/sign-up", body)
+            .then(res => {
+                setAndPersistToken(res.data.token);
+                navigate("/")
+            }).catch((err) => {
+                console.log("ERR", err);
+                alert("Erro no login");
+            });
+    }
 
     return (
         <Container>
-            <Form>
+            <Form onSubmit={() => signUp()}>
                 <input
                     type="text"
+                    name="name"
                     placeholder="Nome"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     required
                 />
                 <input
                     type="text"
+                    name="cpf"
                     placeholder="CPF"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
                     required
                 />
                 <input
                     type="email"
+                    name="email"
                     placeholder="E-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                 />
                 <input
                     type="password"
+                    name="password"
                     placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button>
-                    {"CADASTRAR"}
-                </button>
+                <button type="submit">CADASTRAR</button>
             </Form>
             <Link to="/">
                 <p>Já possuí uma conta? Entre</p>
@@ -47,7 +82,8 @@ const Container = styled.div`
     justify-content: center;
     width: 100vw;
     height: 100vh;
-    background: #000000;
+    padding: 0 36px 0 36px;
+    box-sizing: border-box;
     p {
         font-weight: 400;
         font-size: 14px;
@@ -62,7 +98,7 @@ const Form = styled.form`
     flex-direction: column;
     align-items: center;
     input {
-        width: 300px;
+        min-width: 300px;
         height: 52px;
         border-radius: 8px;
         background: #FFFFFF;

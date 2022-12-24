@@ -3,32 +3,65 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components"
 import logo from "../assets/Logo.png"
-import { UserContext } from "../context/UserContext";
+import UserContext from "../contexts/UserContext";
 
 export default function LoginPage() {
+    const [user, setUser] = useState("");
+    const [password, setPassword] = useState("");
+    const { token, setAndPersistToken } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    // useEffect(loadToken, [token]);
+
+    function login() {
+        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", {
+            user: user,
+            password: password
+        }).then(res => {
+            setAndPersistToken(res.data.token);
+            handleLogin()
+        }).catch((err) => {
+            console.log(err);
+            alert("Erro no login");
+        });
+    }
+
+    function handleLogin() {
+        console.log(token.membership);
+        token.membership !== null ? navigate("/home")
+            : navigate("/subscriptions")
+    }
 
     return (
-        <Container>
-            <img src={logo} alt="Driven Plus" />
-            <Form>
-                <input
-                    type="email"
-                    placeholder="E-mail"
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Senha"
-                    required
-                />
-                <button>
-                    {"ENTRAR"}
-                </button>
-            </Form>
-            <Link to="/sign-up">
-                <p>Não possui uma conta? Cadastre-se</p>
-            </Link>
-        </Container>
+        <>
+            {
+                token !== null ?
+                    navigate("/home")
+                    : <Container>
+                        <img src={logo} alt="Driven Plus" />
+                        <Form onSubmit={() => login()}>
+                            <input
+                                type="email"
+                                value={user}
+                                placeholder="E-mail"
+                                onChange={(e) => setUser(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Senha"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button type="submit" >ENTRAR</button>
+                        </Form>
+                        <Link to="/sign-up">
+                            <p>Não possui uma conta? Cadastre-se</p>
+                        </Link>
+                    </Container>
+            }
+        </>
     )
 }
 
@@ -61,7 +94,6 @@ const Form = styled.form`
         width: 300px;
         height: 52px;
         border-radius: 8px;
-        background: #FFFFFF;
         margin-bottom: 16px;
         padding: 14px;
         box-sizing: border-box;
