@@ -9,9 +9,10 @@ export default function SubscriptionID() {
     const navigate = useNavigate()
     const { id } = useParams();
     const { token } = useContext(UserContext);
-    const [subData , setSubData] = useState()
+    const [subData, setSubData] = useState()
 
     const config = { headers: { Authorization: `Bearer ${token}` } };
+    
     useEffect(() => {
         axios.get(`https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships/${id}`, config)
             .then(res => {

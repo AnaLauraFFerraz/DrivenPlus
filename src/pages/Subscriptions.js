@@ -5,23 +5,24 @@ import styled from "styled-components"
 import UserContext from "../contexts/UserContext";
 
 export default function Subscriptions() {
-    const navigate = useNavigate()
-    const { token } = useContext(UserContext);
     const [subs, setSubs] = useState([]);
     const [selectedSub, setSelectedSub] = useState();
 
-    const config = {headers: {Authorization: `Bearer ${token}`}};
+    const { token } = useContext(UserContext);
+    const navigate = useNavigate()
+
+    const config = { headers: { Authorization: `Bearer ${token}` } };
     useEffect(() => {
         axios.get("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships", config)
-        .then(res => {
-            setSubs(res.data)
-        })
+            .then(res => {
+                setSubs(res.data)
+            })
     })
 
     function handleClick(sub) {
-        setSelectedSub(sub)
-        console.log(selectedSub)
-        navigate(`subscription/${sub.id}`)
+        setSelectedSub(sub);
+        console.log(selectedSub);
+        navigate(`subscription/${sub.id}`);
     }
 
     return (
