@@ -1,66 +1,71 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components"
-import logo from "../assets/Logo.png"
 import UserContext from "../contexts/UserContext";
+import logo from "../assets/Logo.png"
 
 export default function LoginPage() {
-    const [user, setUser] = useState("");
+
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loginData, setLoginData] = useState({});
+
     const { token, setAndPersistToken } = useContext(UserContext);
     const navigate = useNavigate();
 
-    // useEffect(loadToken, [token]);
-
-    function login() {
-        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", {
-            user: user,
+    function login(e) {
+        e.preventDefault();
+        let body = {
+            email: email,
             password: password
-        }).then(res => {
-            setAndPersistToken(res.data.token);
-            handleLogin()
-        }).catch((err) => {
-            console.log(err);
-            alert("Erro no login");
-        });
+        };
+        console.log(body);
+
+        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", body)
+            .then((res) => {
+                setLoginData(res.data)
+                setAndPersistToken(res.data.token);
+            }).catch((err) => {
+                console.log("ERR", err);
+                alert("Erro no login");
+            });
     }
 
-    function handleLogin() {
-        console.log(token.membership);
-        token.membership !== null ? navigate("/home")
-            : navigate("/subscriptions")
-    }
+    useEffect(() => {
+        if (token) {
+            loginData.membership ? navigate("/home")
+                : navigate("/subscriptions")
+        }
+    }, [token, loginData, navigate]);
 
     return (
         <>
-            {
-                token !== null ?
-                    navigate("/home")
-                    : <Container>
-                        <img src={logo} alt="Driven Plus" />
-                        <Form onSubmit={() => login()}>
-                            <input
-                                type="email"
-                                value={user}
-                                placeholder="E-mail"
-                                onChange={(e) => setUser(e.target.value)}
-                                required
-                            />
-                            <input
-                                type="password"
-                                placeholder="Senha"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <button type="submit" >ENTRAR</button>
-                        </Form>
-                        <Link to="/sign-up">
-                            <p>Não possui uma conta? Cadastre-se</p>
-                        </Link>
-                    </Container>
-            }
+            <Container>
+                <img src={logo} alt="Driven Plus" />
+                <Form onSubmit={login}>
+                    <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        placeholder="E-mail"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Senha"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button>ENTRAR</button>
+                </Form>
+                <Link to="/sign-up">
+                    <p>Não possui uma conta? Cadastre-se</p>
+                </Link>
+            </Container>
         </>
     )
 }

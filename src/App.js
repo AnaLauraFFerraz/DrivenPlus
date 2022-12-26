@@ -1,35 +1,27 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from 'react';
-//import { useNavigate } from "react-router-dom";
 
+import UserContext from './contexts/UserContext'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from "./pages/SignUpPage";
 import Subscriptions from "./pages/Subscriptions";
 import SubscriptionID from './pages/SubscriptionID'
 import Home from "./pages/Home";
 
-import UserContext from './contexts/UserContext'
-
 export default function App() {
 
   const tokenOnLocalStorage = localStorage.getItem("token");
+  console.log("TOKEN App(): ", tokenOnLocalStorage);
 
   const [token, setToken] = useState(tokenOnLocalStorage);
 
-  //const navigate = useNavigate()
-
-  // function loadToken() {
-  //   if (tokenOnLocalStorage !== null) {
-  //     setAndPersistToken(tokenOnLocalStorage);
-  //     navigate("/home");
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }
-
   function setAndPersistToken(token) {
-    setToken(token);
-    localStorage.setItem("token", token);
+    if (token !== null) {
+      setToken(token);
+      localStorage.setItem("token", token);
+      console.log("function setAndPersistToken() ", token);
+    }
+    // localStorage.removeItem("token");
   }
 
   return (

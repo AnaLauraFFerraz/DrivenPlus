@@ -1,39 +1,50 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components"
 import UserContext from "../contexts/UserContext";
 
 export default function SignUpPage() {
+
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [cpf, setCpf] = useState("");
+    const [password, setPassword] = useState("");
+
+    const { token, setAndPersistToken } = useContext(UserContext);
     const navigate = useNavigate();
 
-    const { setAndPersistToken } = useContext(UserContext);
-    const [email, setEmail] = useState("")
-    const [name, setName] = useState("")
-    const [cpf, setCpf] = useState("")
-    const [password, setPassword] = useState("")
-
-    function signUp() {
-        const body = {
+    function signUp(e) {
+        e.preventDefault();
+        let body = {
             email: email,
             name: name,
             cpf: cpf,
             password: password
-        }
-        console.log(body)
+        };
+        console.log(body);
+
         axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/sign-up", body)
-            .then(res => {
-                setAndPersistToken(res.data.token);
-                navigate("/")
+            .then((res) => {
+                console.log(res)
+                // setAndPersistToken()
             }).catch((err) => {
                 console.log("ERR", err);
                 alert("Erro no login");
             });
     }
 
+    useEffect(() => {
+        if (token !== null) {
+            //console.log("TOKEN: ", token);
+            //setAndPersistToken()
+            navigate("/");
+        }
+    }, [token, navigate, setAndPersistToken]);
+
     return (
         <Container>
-            <Form onSubmit={() => signUp()}>
+            <Form onSubmit={signUp}>
                 <input
                     type="text"
                     name="name"
@@ -66,7 +77,7 @@ export default function SignUpPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">CADASTRAR</button>
+                <button>CADASTRAR</button>
             </Form>
             <Link to="/">
                 <p>Já possuí uma conta? Entre</p>
