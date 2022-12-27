@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components"
 import UserContext from "../contexts/UserContext";
+import PopUp from "../components/PopUp";
 
 export default function SubscriptionID() {
     const [cardName, setCardName] = useState("");
@@ -11,12 +12,13 @@ export default function SubscriptionID() {
     const [expirationDate, setExpirationDate] = useState("");
     const [subData, setSubData] = useState({});
     const [perks, setPerks] = useState([]);
+    const [popUp, setPopUp] = useState(false);
 
     const navigate = useNavigate();
     const { id } = useParams();
     const { token } = useContext(UserContext);
 
-    // const config = { headers: { Authorization: `Bearer ${token}` } };
+    const config = { headers: { Authorization: `Bearer ${token}` } };
 
     useEffect(() => {
         const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -24,31 +26,28 @@ export default function SubscriptionID() {
             .then((res) => {
                 setSubData(res.data);
                 setPerks(res.data.perks);
-            }).catch((err) => console.log("ERR", err))
+            })
     }, [id, token])
 
-    const toString = JSON.stringify(subData)
+    function subscribe(e) {
+        e.preventDefault();
+        let body = {
+            membershipId: id,
+            cardName: cardName,
+            cardNumber: cardNumber,
+            securityNumber: securityNumber,
+            expirationDate: expirationDate
+        };
 
-    // function subscribe(e) {
-    //     e.preventDefault();
-    //     let body = {
-    //         membershipId: id,
-    //         cardName: cardName,
-    //         cardNumber: cardNumber,
-    //         securityNumber: securityNumber,
-    //         expirationDate: expirationDate
-    //     };
-
-    //     axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", body, config)
-    //         .then((res) => {
-    //             console.log(res)
-    //             //Confirmation Pop-up
-    //             navigate("/home")
-    //         }).catch((err) => {
-    //             console.log("ERR", err);
-    //             alert("Erro no login");
-    //         });
-    // }
+        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", body, config)
+            .then((res) => {
+                console.log(res)
+                navigate("/home", { state: { subData: subData } })
+            }).catch((err) => {
+                console.log("ERR", err);
+                alert("Erro no login");
+            });
+    }
 
     return (
         <Container>
@@ -61,7 +60,7 @@ export default function SubscriptionID() {
             </Header>
             <SubscriptionInfo>
                 <div>
-                    <iconify-icon icon="fluent:clipboard-task-list-rtl-20-regular"></iconify-icon>
+                    <iconify-icon className="task" icon="fluent:clipboard-task-list-rtl-20-regular"></iconify-icon>
                     <h2>Benefícios: </h2>
                 </div>
                 {
@@ -78,7 +77,7 @@ export default function SubscriptionID() {
                 <p>{`R$ ${subData.price} cobrados mensalmente`}</p>
             </SubscriptionInfo>
 
-            <Form onSubmit={() => navigate("/home", {state: {subData: subData}})}>
+            <Form onSubmit={() => setPopUp(true)}>
                 <input
                     type="text"
                     name="name"
@@ -98,7 +97,7 @@ export default function SubscriptionID() {
                 <div>
                     <input
                         type="text"
-                        name="name"
+                        name="securityNumber"
                         placeholder="Código de segurança"
                         value={securityNumber}
                         onChange={(e) => setSecurityNumber(e.target.value)}
@@ -106,7 +105,7 @@ export default function SubscriptionID() {
                     />
                     <input
                         type="text"
-                        name="name"
+                        name="expirationDate"
                         placeholder="Validade"
                         value={expirationDate}
                         onChange={(e) => setExpirationDate(e.target.value)}
@@ -117,7 +116,14 @@ export default function SubscriptionID() {
                     {"ASSINAR"}
                 </button>
             </Form>
-        </Container>
+            {popUp && (
+                <PopUp
+                    setPopUp={setPopUp}
+                    subscribe={subscribe}
+                    subData={subData}
+                />
+            )}
+        </Container >
     )
 }
 
@@ -193,6 +199,7 @@ const Form = styled.form`
     align-items: center;
     justify-content: center;
     margin: 34px 0;
+    box-sizing: border-box;
     input {
         width: 100%;
         height: 52px;
