@@ -111,13 +111,13 @@ export default function SubscriptionID() {
                     {"ASSINAR"}
                 </button>
             </Form>
-            {/* {popUp && (
+            {popUp && (
                 <PopUp
                     setPopUp={setPopUp}
                     subscribe={subscribe}
                     subData={subData}
                 />
-            )} */}
+            )}
         </Container >
     )
 }
