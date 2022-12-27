@@ -19,9 +19,7 @@ export default function App() {
     if (token !== null) {
       setToken(token);
       localStorage.setItem("token", token);
-      console.log("function setAndPersistToken() ", token);
     }
-    // localStorage.removeItem("token");
   }
 
   return (

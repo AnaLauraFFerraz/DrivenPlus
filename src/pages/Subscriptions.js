@@ -6,7 +6,6 @@ import UserContext from "../contexts/UserContext";
 
 export default function Subscriptions() {
     const [subs, setSubs] = useState([]);
-    const [selectedSub, setSelectedSub] = useState();
 
     const { token } = useContext(UserContext);
     const navigate = useNavigate()
@@ -14,23 +13,17 @@ export default function Subscriptions() {
     const config = { headers: { Authorization: `Bearer ${token}` } };
     useEffect(() => {
         axios.get("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions/memberships", config)
-            .then(res => {
+            .then((res) => {
                 setSubs(res.data)
-            })
+            }).catch((err) => console.log("ERR", err))
     })
-
-    function handleClick(sub) {
-        setSelectedSub(sub);
-        console.log(selectedSub);
-        navigate(`subscription/${sub.id}`);
-    }
 
     return (
         <Container>
             <h1>Escolha seu Plano</h1>
             {subs.map((sub) => {
                 return (
-                    <Card onClick={() => handleClick(sub)}>
+                    <Card key={sub.id} onClick={() => navigate(`/subscriptions/${sub.id}`)}>
                         <img src={sub.image} alt="Subscription" />
                         <p>{sub.price}</p>
                     </Card>

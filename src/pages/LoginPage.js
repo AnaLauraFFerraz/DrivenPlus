@@ -20,7 +20,6 @@ export default function LoginPage() {
             email: email,
             password: password
         };
-        console.log(body);
 
         axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", body)
             .then((res) => {
