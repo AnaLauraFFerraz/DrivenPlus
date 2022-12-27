@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import SignUpPage from "./pages/SignUpPage";
 import Subscriptions from "./pages/Subscriptions";
 import SubscriptionID from './pages/SubscriptionID'
+import UserDataPage from "./pages/UserDataPage";
 import Home from "./pages/Home";
 
 export default function App() {
@@ -32,7 +33,7 @@ export default function App() {
           <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/subscriptions/:id" element={<SubscriptionID />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/users/:id" element={<Home />} />
+          <Route path="/users/:id" element={<UserDataPage />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

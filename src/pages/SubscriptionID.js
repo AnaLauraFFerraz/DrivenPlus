@@ -38,15 +38,10 @@ export default function SubscriptionID() {
             securityNumber: securityNumber,
             expirationDate: expirationDate
         };
-
+        console.log("here")
         axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", body, config)
-            .then((res) => {
-                console.log(res)
-                navigate("/home", { state: { subData: subData } })
-            }).catch((err) => {
-                console.log("ERR", err);
-                alert("Erro no login");
-            });
+            .then(navigate("/home", { state: { subData: subData } }))
+            .catch((err) => alert("Erro no login"));
     }
 
     return (
@@ -77,10 +72,10 @@ export default function SubscriptionID() {
                 <p>{`R$ ${subData.price} cobrados mensalmente`}</p>
             </SubscriptionInfo>
 
-            <Form onSubmit={() => setPopUp(true)}>
+            <Form onSubmit={() => subscribe()}>
                 <input
                     type="text"
-                    name="name"
+                    name="cardName"
                     placeholder="Nome impresso no cartão"
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value)}
@@ -88,7 +83,7 @@ export default function SubscriptionID() {
                 />
                 <input
                     type="text"
-                    name="name"
+                    name="cardNumber"
                     placeholder="Dígitos do cartão"
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
@@ -112,17 +107,17 @@ export default function SubscriptionID() {
                         required
                     />
                 </div>
-                <button>
+                <button type="submit">
                     {"ASSINAR"}
                 </button>
             </Form>
-            {popUp && (
+            {/* {popUp && (
                 <PopUp
                     setPopUp={setPopUp}
                     subscribe={subscribe}
                     subData={subData}
                 />
-            )}
+            )} */}
         </Container >
     )
 }
