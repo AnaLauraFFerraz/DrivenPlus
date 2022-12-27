@@ -14,6 +14,7 @@ export default function App() {
   console.log("TOKEN App(): ", tokenOnLocalStorage);
 
   const [token, setToken] = useState(tokenOnLocalStorage);
+  const [user, setUser] = useState({});
 
   function setAndPersistToken(token) {
     if (token !== null) {
@@ -23,7 +24,7 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={{ token, setToken, setAndPersistToken }}>
+    <UserContext.Provider value={{ token, setToken, user, setUser, setAndPersistToken }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/subscriptions/:id" element={<SubscriptionID />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/users/:id" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

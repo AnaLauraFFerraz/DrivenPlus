@@ -9,9 +9,9 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loginData, setLoginData] = useState({});
+    // const [user, setUser] = useState({});
 
-    const { token, setAndPersistToken } = useContext(UserContext);
+    const { user, setUser, token, setAndPersistToken } = useContext(UserContext);
     const navigate = useNavigate();
 
     function login(e) {
@@ -23,7 +23,7 @@ export default function LoginPage() {
 
         axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", body)
             .then((res) => {
-                setLoginData(res.data)
+                setUser(res.data)
                 setAndPersistToken(res.data.token);
             }).catch((err) => {
                 console.log("ERR", err);
@@ -33,10 +33,10 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (token) {
-            loginData.membership ? navigate("/home")
+            user.membership ? navigate("/home")
                 : navigate("/subscriptions")
         }
-    }, [token, loginData, navigate]);
+    }, [token, user, navigate]);
 
     return (
         <>

@@ -12,11 +12,11 @@ export default function SubscriptionID() {
     const [subData, setSubData] = useState({});
     const [perks, setPerks] = useState([]);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { id } = useParams();
     const { token } = useContext(UserContext);
 
-    const config = { headers: { Authorization: `Bearer ${token}` } };
+    // const config = { headers: { Authorization: `Bearer ${token}` } };
 
     useEffect(() => {
         const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -27,30 +27,36 @@ export default function SubscriptionID() {
             }).catch((err) => console.log("ERR", err))
     }, [id, token])
 
-    function subscribe(e) {
-        e.preventDefault();
-        let body = {
-            membershipId: id,
-            cardName: cardName,
-            cardNumber: cardNumber,
-            securityNumber: securityNumber,
-            expirationDate: expirationDate
-        };
+    const toString = JSON.stringify(subData)
 
-        axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", body, config)
-            .then((res) => {
-                console.log(res)
-                navigate("/home")
-            }).catch((err) => {
-                console.log("ERR", err);
-                alert("Erro no login");
-            });
-    }
+    // function subscribe(e) {
+    //     e.preventDefault();
+    //     let body = {
+    //         membershipId: id,
+    //         cardName: cardName,
+    //         cardNumber: cardNumber,
+    //         securityNumber: securityNumber,
+    //         expirationDate: expirationDate
+    //     };
+
+    //     axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", body, config)
+    //         .then((res) => {
+    //             console.log(res)
+    //             //Confirmation Pop-up
+    //             navigate("/home")
+    //         }).catch((err) => {
+    //             console.log("ERR", err);
+    //             alert("Erro no login");
+    //         });
+    // }
 
     return (
         <Container>
+            <iconify-icon icon="fa-solid:arrow-left" onClick={() => {
+                navigate("/subscriptions")
+            }} ></iconify-icon>
             <Header>
-                <img src={subData.image} alt="Driven Plus" />
+                <img src={subData.image} alt={subData.name} />
                 <h1>{subData.name}</h1>
             </Header>
             <SubscriptionInfo>
@@ -72,7 +78,7 @@ export default function SubscriptionID() {
                 <p>{`R$ ${subData.price} cobrados mensalmente`}</p>
             </SubscriptionInfo>
 
-            <Form onSubmit={subscribe}>
+            <Form onSubmit={() => navigate("/home", {state: {subData: subData}})}>
                 <input
                     type="text"
                     name="name"
@@ -123,6 +129,13 @@ const Container = styled.div`
     height: 100vh;
     padding: 0 36px 0 36px;
     box-sizing: border-box;
+    iconify-icon {
+        position: fixed;
+        top: 22px;
+        left: 22px;
+        font-size: 28px;
+        color: #FFFFFF;
+    }
 `
 const Header = styled.header`
     display: flex;
@@ -150,7 +163,8 @@ const SubscriptionInfo = styled.div`
         display: flex;
         margin-top: 10px;
         iconify-icon {
-            width: 15px;
+            position: static;
+            font-size: 15px;
             color: #FF4791;
         }
         h2 {
