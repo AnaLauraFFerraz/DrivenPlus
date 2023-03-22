@@ -30,14 +30,14 @@ export default function SignUpPage() {
                 // setAndPersistToken()
             }).catch((err) => {
                 console.log("ERR", err);
-                alert("Erro no login");
+                alert("Erro no cadastro");
             });
     }
 
     useEffect(() => {
         if (token !== null) {
-            //console.log("TOKEN: ", token);
-            //setAndPersistToken()
+            console.log("TOKEN: ", token);
+            setAndPersistToken()
             navigate("/");
         }
     }, [token, navigate, setAndPersistToken]);
